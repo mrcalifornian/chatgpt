@@ -1,0 +1,19 @@
+{
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "start-sever": "node app.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security",
+    "mongoose": "^6.8.3",
+    "node-telegram-bot-api": "^0.61.0",
+    "openai": "^3.1.0"
+  },
+  "name": "gptprobot",
+  "version": "1.0.0",
+  "description": "Telegram bot that uses OpenAI API to generate answers",
+  "author": "Nodirbek Tojiboev",
+  "license": "ISC"
+}

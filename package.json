@@ -1,7 +1,7 @@
 {
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon index.js",
     "start-sever": "node app.js"
   },
   "dependencies": {

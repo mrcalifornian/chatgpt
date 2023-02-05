@@ -20,7 +20,7 @@ let chatGpt = async (sentText, cb) => {
     await openai.createCompletion({
         model: davinci3,
         prompt: sentText,
-        max_tokens: 150,
+        max_tokens: 200,
         temperature: 0.9,
         n: 1
     }).then(response => {

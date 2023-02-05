@@ -119,16 +119,16 @@ function botStart() {
           let id =
             sentText.split(" ")[1];
 
-          // if the user is refferd and is not an existing user then add 5 point to refreed user
+          // if the user is refferd and is not an existing user then add 10 point to refreed user
           if (id && !userExists) {
             BotUser.findOne({
               userId: id,
             }).then((user) => {
-              user.leftAttempts += 5;
+              user.leftAttempts += 10;
               user.save();
               bot.sendMessage(
                 user.userId,
-                "You received 5 credits for inviting a friend!"
+                "You received 10 credits for inviting a friend!"
               );
               console.log(
                 "New user invited!"

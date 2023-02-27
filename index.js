@@ -11,7 +11,7 @@ const TOKEN = process.env.PROTOKEN;
 const dblink = process.env.MONGODB;
 const limit = 250;
 const attempts = 25;
-let refBonus = 10;
+let refBonus = 5;
 
 const bot = new TelegramBot(TOKEN, {
   polling: true,

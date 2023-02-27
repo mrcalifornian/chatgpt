@@ -86,7 +86,7 @@ function botStart() {
 
         } else if (sentText.startsWith("/start")) {
           // Send user greeting
-          let m = `Welcome to @GPT_ProBot!🤖 \nOur AI-powered bot is here to provide you with answers to any questions you may have using the cutting-edge AI model developed by OpenAI. \n\nEvery month you will be given 💰25 free credits to use for asking questions. Each question costs 1 credit. \n\nStart asking your questions now and let the power of AI assist you! \n\nFeatures: \n\n1. /attempts command allows you to instantly check how many attempts you have left.   \n\n2. Using /invite command you can get your invite link and share it with your friends, and for each friend that joins, you will receive 10 credits.`;
+          let m = `Welcome to @GPT_ProBot!🤖 \nOur AI-powered bot is here to provide you with answers to any questions you may have using the cutting-edge AI model developed by OpenAI. \n\nEvery month you will be given 💰25 free credits to use for asking questions. Each question costs 1 credit. \n\nStart asking your questions now and let the power of AI assist you! \n\nFeatures: \n\n1. /attempts command allows you to instantly check how many attempts you have left.   \n\n2. Using /invite command you can get your invite link and share it with your friends, and for each friend that joins, you will receive 10 credits. \n\n3. Image generation\n/dalle-Text for image you want to create`;
 
           bot.sendMessage(userId, m);
 

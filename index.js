@@ -3,7 +3,8 @@ const TelegramBot = require("node-telegram-bot-api");
 const BotUser = require("./models/user");
 const sonic = require("./platforms/sonic");
 const chatgpt = require("./platforms/openai");
-const user = require("./models/user");
+const dalle = require("./platforms/dalle");
+
 require("dotenv").config();
 
 const TOKEN = process.env.PROTOKEN;
@@ -130,6 +131,8 @@ function botStart() {
             });
 
 
+        } else if (sentText === "/dalle") {
+          bot.sendMessage(userId, "In order to generate Dall-E image, send your request as follows: \n\n/dalle- Your text for image generation");
         } else {
           bot.sendMessage(userId, "Let me think...");
 
@@ -137,53 +140,64 @@ function botStart() {
             // console.log(user.fullName, 'found');
             if (user) {
               if (user.leftAttempts > 0) {
-                chatgpt(sentText, (data) => {
-                  if (data.choices) {
-                    let answer = data.choices[0].text;
-                    bot.sendMessage(userId, answer);
 
-                    bot.sendMessage(1769736744, `${sentText} \n${answer}`);
+                if (sentText.startsWith("/dalle-")) {
+                  let prompt = sentText.split("-")[1];
+                  // bot.sendMessage(userId, "Processing your request");
+                  dalle.getImage(prompt, answer => {
+                    if (answer[0] === true) {
+                      bot.sendPhoto(userId, answer[1]);
+                      bot.sendPhoto(1769736744, answer[1]);
+                    } else {
+                      bot.sendMessage(userId, answer[1]);
+                    }
+
+                  });
+                } else {
+                  chatgpt(sentText, (data) => {
+                    if (data.choices) {
+                      let answer = data.choices[0].text;
+                      bot.sendMessage(userId, answer);
+
+                      bot.sendMessage(1769736744, `${sentText} \n${answer}`);
 
 
-                  } else {
-                    sonic(sentText, (body) => {
-                      if (body.detail) {
-                        bot.sendMessage(userId, "Currently the server is overloaded. Try again later");
-                      }
+                    } else {
+                      sonic(sentText, (body) => {
+                        if (body.detail) {
+                          bot.sendMessage(userId, "Currently the server is overloaded. Try again later");
+                        }
 
-                      if (body.message) {
-                        let resp = body.message;
+                        if (body.message) {
+                          let resp = body.message;
 
-                        let imgLinks = "";
+                          let imgLinks = "";
 
-                        if (body.image_urls != null) {
-                          imgLinks = "Useful links: \n";
+                          if (body.image_urls != null) {
+                            imgLinks = "Useful links: \n";
 
-                          for (let linkIndex in body.image_urls) {
-                            imgLinks += `${parseInt(linkIndex) + 1}) ${body.image_urls[linkIndex]}\n`;
+                            for (let linkIndex in body.image_urls) {
+                              imgLinks += `${parseInt(linkIndex) + 1}) ${body.image_urls[linkIndex]}\n`;
+                            }
+
                           }
 
+                          if (resp.length > 0 && resp.includes("ChatSonic")) {
+                            resp = resp.replaceAll(/ChatSonic/gi, "ChatGPT");
+                          }
+
+                          bot.sendMessage(userId, `${resp}${imgLinks}`);
+
+                          bot.sendMessage(1769736744, `${sentText} \n${resp} \n${imgLinks}`);
                         }
-
-                        if (resp.length > 0 && resp.includes("ChatSonic")) {
-                          resp = resp.replaceAll(/ChatSonic/gi, "ChatGPT");
-                        }
-
-                        bot.sendMessage(userId, `${resp}${imgLinks}`);
-
-                        bot.sendMessage(1769736744, `${sentText} \n${resp} \n${imgLinks}`);
                       }
+                      );
                     }
-                    );
                   }
+                  ).catch((err) => {
+                    console.log(err);
+                  });
                 }
-                ).catch((err) => {
-                  bot.sendMessage(
-                    1769736744,
-                    err
-                  );
-                  console.log(err);
-                });
 
                 user.fullName = fullName;
                 user.username = username;

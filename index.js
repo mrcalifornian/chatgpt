@@ -229,7 +229,12 @@ function botStart() {
 
     if (userId === ADMIN && caption.startsWith("/publish")) {
       let msg = caption.split("#")[1];
-      bot.sendPhoto(userId, photo, { caption: msg });
+
+      BotUser.find().then(users => {
+        for (let user of users) {
+          bot.sendPhoto(user.userId, photo, { caption: msg });
+        }
+      });
     }
   });
 

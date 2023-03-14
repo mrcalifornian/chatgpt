@@ -6,7 +6,7 @@ const dalle = require("./platforms/dalle");
 require("dotenv").config();
 
 const TOKEN = process.env.PROTOKEN;
-const dblink = process.env.MONGODBT;
+const dblink = process.env.MONGODB;
 const limit = 250;
 const attempts = 25;
 let refBonus = 5;

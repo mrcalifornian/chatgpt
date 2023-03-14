@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 require('dotenv').config();
 
-let API = process.env.OPENAIW;
+let API = process.env.OPENAI;
 
 exports.getImage = async (prompt, cb) => {
 

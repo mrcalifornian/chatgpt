@@ -1,17 +1,16 @@
 const mongoose = require("mongoose");
 const TelegramBot = require("node-telegram-bot-api");
 const BotUser = require("./models/user");
-const sonic = require("./platforms/sonic");
-const chatgpt = require("./platforms/openai");
+const chatgpt = require('./platforms/chatgpt');
 const dalle = require("./platforms/dalle");
-
 require("dotenv").config();
 
 const TOKEN = process.env.PROTOKEN;
-const dblink = process.env.MONGODB;
+const dblink = process.env.MONGODBT;
 const limit = 250;
 const attempts = 25;
 let refBonus = 5;
+const ADMIN = 1945261558;
 
 const bot = new TelegramBot(TOKEN, {
   polling: true,
@@ -22,7 +21,6 @@ bot.on("polling_error", (error) => {
 });
 
 mongoose.set("strictQuery", true);
-
 mongoose
   .connect(dblink)
   .then(() => {
@@ -32,6 +30,8 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+
 
 function botStart() {
   console.log("The Bot is live");
@@ -70,16 +70,49 @@ function botStart() {
       })
       .then(() => {
 
-        if (userId == 1769736744 && sentText.startsWith("/publish")) {
-
-          let adv = sentText.split("#")[1];
-
-          BotUser.find().then(
-            (users) => {
-              for (let usr of users) {
-                bot.sendMessage(usr.userId, adv);
+        if (userId === ADMIN) {
+          // bot.sendMessage(userId, "You are an admin!");
+          if (sentText === "/reset") {
+            BotUser.find().then(users => {
+              for (let user of users) {
+                user.leftAttempts += attempts;
+                user.save();
               }
+
+              bot.sendMessage(ADMIN, "All user attempts reset!");
             });
+          } else if (sentText.startsWith("/publish")) {
+            let message = sentText.split("#")[1];
+            BotUser.find().then(users => {
+              for (let user of users) {
+                bot.sendMessage(user.userId, message);
+              }
+
+            });
+          } else {
+            if (sentText.startsWith("/dalle")) {
+
+              let prompt = sentText.split("-")[1];
+              dalle.getImage(prompt, answer => {
+                if (answer[0] === true) {
+                  bot.sendPhoto(userId, answer[1], { caption: prompt });
+                  bot.sendPhoto(1769736744, answer[1], { caption: prompt });
+                } else {
+                  bot.sendMessage(userId, answer[1]);
+                }
+              });
+
+            } else {
+
+              chatgpt(fullName, sentText)
+                .then(answer => {
+                  bot.sendMessage(userId, answer);
+
+                  bot.sendMessage(1769736744, `${sentText} \n${answer}`);
+                });
+
+            }
+          }
 
         } else if (sentText.length > limit) {
           bot.sendMessage(userId, `You questons should not exceed ${limit} characters`);
@@ -116,6 +149,7 @@ function botStart() {
 
           // Send user how many attempts left
         } else if (sentText === "/attempts") {
+
           BotUser.findOne({ userId: userId })
             .then((user) => {
               // console.log(user);
@@ -141,62 +175,29 @@ function botStart() {
             if (user) {
               if (user.leftAttempts > 0) {
 
-                if (sentText.startsWith("/dalle-")) {
+                if (sentText.startsWith("/dalle")) {
+
                   let prompt = sentText.split("-")[1];
                   // bot.sendMessage(userId, "Processing your request");
                   dalle.getImage(prompt, answer => {
                     if (answer[0] === true) {
-                      bot.sendPhoto(userId, answer[1]);
-                      bot.sendPhoto(1769736744, answer[1]);
+                      bot.sendPhoto(userId, answer[1], { caption: prompt });
+                      bot.sendPhoto(1769736744, answer[1], { caption: prompt });
                     } else {
                       bot.sendMessage(userId, answer[1]);
                     }
 
                   });
+
                 } else {
-                  chatgpt(sentText, (data) => {
-                    if (data.choices) {
-                      let answer = data.choices[0].text;
+
+                  chatgpt(fullName, sentText)
+                    .then(answer => {
                       bot.sendMessage(userId, answer);
 
                       bot.sendMessage(1769736744, `${sentText} \n${answer}`);
+                    });
 
-
-                    } else {
-                      sonic(sentText, (body) => {
-                        if (body.detail) {
-                          bot.sendMessage(userId, "Currently the server is overloaded. Try again later");
-                        }
-
-                        if (body.message) {
-                          let resp = body.message;
-
-                          let imgLinks = "";
-
-                          if (body.image_urls != null) {
-                            imgLinks = "Useful links: \n";
-
-                            for (let linkIndex in body.image_urls) {
-                              imgLinks += `${parseInt(linkIndex) + 1}) ${body.image_urls[linkIndex]}\n`;
-                            }
-
-                          }
-
-                          if (resp.length > 0 && resp.includes("ChatSonic")) {
-                            resp = resp.replaceAll(/ChatSonic/gi, "ChatGPT");
-                          }
-
-                          bot.sendMessage(userId, `${resp}${imgLinks}`);
-
-                          bot.sendMessage(1769736744, `${sentText} \n${resp} \n${imgLinks}`);
-                        }
-                      }
-                      );
-                    }
-                  }
-                  ).catch((err) => {
-                    console.log(err);
-                  });
                 }
 
                 user.fullName = fullName;
@@ -205,17 +206,31 @@ function botStart() {
                 user.save();
 
               } else {
-                bot.sendMessage(userId, "You run out of attempts.");
+                bot.sendMessage(userId, "You run out of attempts. \nInvite /invite friends to get more credits. \nYou will receive " + refBonus + " credits for every invited friend.");
               }
 
             } else {
               bot.sendMessage(userId, "Sorry, could not catch that. Try again");
             }
           });
+
         }
       })
       .catch((err) => {
         console.log(err);
       });
   });
+
+  bot.on('photo', body => {
+    let userId = body.from.id;
+    let caption = body.caption || "";
+    // console.log(body);
+    let photo = body.photo[0].file_id;
+
+    if (userId === ADMIN && caption.startsWith("/publish")) {
+      let msg = caption.split("#")[1];
+      bot.sendPhoto(userId, photo, { caption: msg });
+    }
+  });
+
 }

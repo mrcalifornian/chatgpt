@@ -182,7 +182,7 @@ function botStart() {
                   dalle.getImage(prompt, answer => {
                     if (answer[0] === true) {
                       bot.sendPhoto(userId, answer[1], { caption: prompt });
-                      bot.sendPhoto(1769736744, answer[1], { caption: prompt });
+                      // bot.sendPhoto(1769736744, answer[1], { caption: prompt });
                     } else {
                       bot.sendMessage(userId, answer[1]);
                     }
@@ -195,7 +195,7 @@ function botStart() {
                     .then(answer => {
                       bot.sendMessage(userId, answer);
 
-                      bot.sendMessage(1769736744, `${sentText} \n${answer}`);
+                      // bot.sendMessage(1769736744, `${sentText} \n${answer}`);
                     });
 
                 }

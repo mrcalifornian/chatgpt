@@ -4,7 +4,7 @@ exports.messsages = {
         "greet": (username) => `Salom ${username}. ChatGPT-ga xush kelibsiz! Men sizning so'rovlaringiz bo'yicha sizga yordam berish va tushunarli javoblar berish uchun mo'ljallangan til modeliman. Bugun sizga qanday yordam bera olaman? \n\n/help - qo'shimcha ma'lumot uchun`,
         'restart': (username) => `Salom ${username}. Bugun sizga qanday yordam bera olaman? \n\n/help - qo'shimcha ma'lumot uchun`,
         'daily': 'Sizga bugungi kun uchun foydalanishga 10 ta bonus berildi. Ulardan hoziroq foydalanishni boshlashingiz mumkin',
-        'attempts': (daily, bonus) => `Bonuslaringiz: \n\Kunlik: ${daily} \nBoshqa: ${bonus} \no Siz har doim koʻproq olish uchun /invite qilishingiz mumkin!`,
+        'attempts': (daily, bonus) => `Bonuslaringiz: \n\Kunlik: ${daily} \nBoshqa: ${bonus} \nSiz har doim koʻproq olish uchun /invite qilishingiz mumkin!`,
         'noattempts': `Urinishlaringiz tugadi. \nBotdan foydalanishni davom ettirish uchun /invite qiling yoki ertaga qaytib keling. \n\n/help - qo'shimcha ma'lumot uchun`,
         'error': `Bu tizim xatosi edi. Iltimos, keyinroq urinib ko'ring!`,
         'dalle': `Dall-E tasvirini yaratish uchun so'rovingizni quyidagicha yuboring: \n\n/dalle - Rasm yaratish uchun matningiz`,

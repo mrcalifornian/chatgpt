@@ -108,7 +108,7 @@ let resetDaily = async (userId) => {
         let user = await User.findOne({ userId: userId });
 
         if (user.dailyAttempts == undefined) {
-            console.log('fucking');
+            console.log('reset for someone');
             user.dailyAttempts = 10;
             user.lastTime = date;
             await user.save();

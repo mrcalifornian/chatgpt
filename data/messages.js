@@ -2,7 +2,7 @@ exports.messsages = {
     'start': "O'zingiz xohlagan suhbat tilini tanlang\n\nВыберите разговорный язык, который вы хотите \n\nChoose a conversational language you want",
     'uz': {
         "greet": (username) => `Salom ${username}. ChatGPT-ga xush kelibsiz! Men sizning so'rovlaringiz bo'yicha sizga yordam berish va tushunarli javoblar berish uchun mo'ljallangan til modeliman. Bugun sizga qanday yordam bera olaman? \n\n/help - qo'shimcha ma'lumot uchun`,
-        'restart': (username) => `Salom ${username}. Bugun sizga qanday yordam bera olaman?`,
+        'restart': (username) => `Salom ${username}. Bugun sizga qanday yordam bera olaman? \n\n/help - qo'shimcha ma'lumot uchun`,
         'daily': 'Sizga bugungi kun uchun foydalanishga 10 ta bonus berildi. Ulardan hoziroq foydalanishni boshlashingiz mumkin',
         'attempts': (daily, bonus) => `Bonuslaringiz: \n\Kunlik: ${daily} \nBoshqa: ${bonus} \no Siz har doim koʻproq olish uchun /invite qilishingiz mumkin!`,
         'noattempts': `Urinishlaringiz tugadi. \nBotdan foydalanishni davom ettirish uchun /invite qiling yoki ertaga qaytib keling. \n\n/help - qo'shimcha ma'lumot uchun`,
@@ -15,7 +15,7 @@ exports.messsages = {
     },
     'ru': {
         "greet": (username) => `Здравствуйте, ${username}. Добро пожаловать в ChatGPT! Я языковая модель, созданная, чтобы помочь вам с вашими запросами и дать проницательные ответы. Как я могу Вам сегодня помочь?\n\n/help - для получения дополнительной информации`,
-        'restart': (username) => `Здравствуйте, ${username}. Как я могу помочь вам сегодня?`,
+        'restart': (username) => `Здравствуйте, ${username}. Как я могу помочь вам сегодня? \n\n/help - для получения дополнительной информации`,
         'daily': 'Вам дано 10 ежедневных попыток на сегодня. Вы можете начать использовать их прямо сейчас',
         'attempts': (daily, bonus) => `Ваши бонусы: \n\nЕжедневно: ${daily} \nЗаработано:: ${bonus} \n\nВы всегда можете /invite, чтобы получить больше!`,
         'noattempts': 'У вас закончились попытки. \n/invite или приходите завтра, чтобы продолжить использование бота. \n\n/help - для получения дополнительной информации',
@@ -28,7 +28,7 @@ exports.messsages = {
     },
     'en': {
         "greet": (username) => `Hello ${username}. Welcome to ChatGPT! I am a language model designed to assist you with your inquiries and provide insightful answers. How may I assist you today? \n\n/help - for more info`,
-        'restart': (username) => `Hello ${username}. How can I help you today?`,
+        'restart': (username) => `Hello ${username}. How can I help you today? \n\n/help - for more info`,
         'daily': "You have been given 10 daily attempts for today. You can start using them now",
         'attempts': (daily, bonus) => `Your bonuses: \n\nDaily:  ${daily} \nEarned:  ${bonus} \n\nYou can always /invite to get more!`,
         'noattempts': 'You run out of attempts. \n/invite or come back tomorrow to continue using the bot. \n\n/help - for more info',

@@ -11,6 +11,7 @@ const bot = new Telegraf(process.env.PROTOKEN);
 
 bot.telegram.setMyCommands([
     { command: 'start', description: 'Botni ishga tushirish / Initiate the bot ' },
+    { command: 'help', description: "Bot qanday ishlaydi / How the bot works" },
     { command: 'dalle', description: 'Dall-E orqali rasm yaratish / Generate an image via Dall-E' },
     { command: 'attempts', description: 'Mavjud urinishlaringiz / Your existing attempts' },
     { command: 'invite', description: `Ko'proq bonuslarga ega bo'ling / Invite and get more bonuses` }

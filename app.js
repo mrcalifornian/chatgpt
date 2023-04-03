@@ -5,10 +5,9 @@ require('dotenv').config();
 const messageController = require('./data/messages');
 const messages = require('./data/messages').messsages;
 const userController = require('./controllers/user');
-const { cp } = require('fs');
 const ADMIN = process.env.ADMIN;
 
-const bot = new Telegraf(process.env.TOKENTEST);
+const bot = new Telegraf(process.env.PROTOKEN);
 
 bot.telegram.setMyCommands([
     { command: 'start', description: 'Botni ishga tushirish / Initiate the bot ' },
@@ -207,7 +206,7 @@ bot.on('animation', async ctx => {
 });
 
 mongoose.set('strictQuery', false);
-mongoose.connect(process.env.MONGODBTEST)
+mongoose.connect(process.env.MONGODB)
     .then(() => {
         console.log('DB Connected');
         bot.launch();

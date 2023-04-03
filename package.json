@@ -1,7 +1,7 @@
 {
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node app.js",
     "start-sever": "node app.js"
   },
   "dependencies": {
@@ -9,7 +9,8 @@
     "fs": "^0.0.1-security",
     "mongoose": "^6.8.3",
     "node-telegram-bot-api": "^0.61.0",
-    "openai": "^3.1.0"
+    "openai": "^3.1.0",
+    "telegraf": "^4.12.2"
   },
   "name": "gptprobot",
   "version": "1.0.0",

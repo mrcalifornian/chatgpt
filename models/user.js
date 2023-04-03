@@ -12,10 +12,19 @@ let botUser = new Schema({
     fullName: {
         type: String
     },
+    operation: String,
     leftAttempts: {
         type: Number,
         required: true
-    }
-});
+    },
+    dailyAttempts: Number,
+    lastTime: String,
+    prompts: [
+        {
+            prompt: String,
+            response: String
+        }
+    ]
+}, { timestamps: true });
 
 module.exports = mongoose.model('User', botUser);

@@ -5,7 +5,6 @@ const API = process.env.OPENAI;
 
 
 module.exports = async (user, prompt) => {
-
     const configuration = new Configuration({
         apiKey: API,
     });
@@ -24,7 +23,7 @@ module.exports = async (user, prompt) => {
         return data;
     } catch (error) {
         console.log(error);
-        return "Sorry an error occured!";
+        throw error;
     }
 
 }

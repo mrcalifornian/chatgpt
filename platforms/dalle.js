@@ -3,7 +3,7 @@ require('dotenv').config();
 
 let API = process.env.OPENAI;
 
-exports.getImage = async (prompt, cb) => {
+exports.getImage = async (prompt) => {
 
     const configuration = new Configuration({
         apiKey: API,
@@ -19,7 +19,7 @@ exports.getImage = async (prompt, cb) => {
         });
 
         let image_url = response.data.data[0].url;
-        cb([true, image_url]);
+        return [true, image_url];
     } catch (error) {
         let message;
         if (error.response) {
@@ -28,6 +28,6 @@ exports.getImage = async (prompt, cb) => {
         } else {
             message = error.message;
         }
-        cb([false, message]);
+        return [false, message];
     }
 }

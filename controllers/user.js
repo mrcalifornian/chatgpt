@@ -80,12 +80,20 @@ exports.sendMessage = async (mode, userId, message) => {
 exports.referralInvited = async (userId) => {
     try {
         let user = await User.findOne({ userId: userId });
-        user.leftAttempts += 5;
+        if (user.leftAttempts == undefined) {
+            console.log('was undefined for ', userId);
+            user.leftAttempts = 5;
+        } else {
+            user.leftAttempts += 5;
+        }
+
         await user.save();
+        console.log(userId, 'invited new friend');
 
         return true;
     } catch (error) {
         console.log(error);
+        console.log(userId);
         return false;
     }
 }

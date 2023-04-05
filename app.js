@@ -29,6 +29,7 @@ bot.start(async ctx => {
         } else {
             user = await userController.createNewUser(message.from.id, message.from.username, message.from.first_name);
             ctx.reply(messages[lang].greet(user.fullName));
+            console.log(invitee);
             let invm = await userController.referralInvited(invitee);
             if (invm) {
                 bot.telegram.sendMessage(invitee, messages[lang].invited)

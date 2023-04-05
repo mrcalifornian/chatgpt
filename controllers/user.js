@@ -79,6 +79,7 @@ exports.sendMessage = async (mode, userId, message) => {
 
 exports.referralInvited = async (userId) => {
     try {
+        console.log(userId);
         let user = await User.findOne({ userId: userId });
         if (user.leftAttempts == undefined) {
             console.log('was undefined for ', userId);
@@ -93,7 +94,6 @@ exports.referralInvited = async (userId) => {
         return true;
     } catch (error) {
         console.log(error);
-        console.log(userId);
         return false;
     }
 }

@@ -109,7 +109,7 @@ bot.on('text', async ctx => {
             if (reply === false) {
                 ctx.reply(messages[lang].noattempts)
             } else {
-                ctx.reply(reply);
+                await ctx.reply(reply);
             }
         }
 

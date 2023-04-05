@@ -54,22 +54,24 @@ exports.sendMessage = async (mode, userId, message) => {
                 return false;
             } else {
                 user.leftAttempts -= 1;
-                await user.save();
             }
         } else {
             user.dailyAttempts -= 1;
-            await user.save();
         }
 
         if (mode === 'image') {
+            await user.save();
             return await dalle.getImage(message);
         }
+
         let response = await chatgpt(user.fullName, message);
+
         user.prompts.push({
             prompt: message,
             response: response,
         });
-        user.save();
+
+        await user.save();
         return response;
     } catch (error) {
         console.log(error);
@@ -79,7 +81,7 @@ exports.sendMessage = async (mode, userId, message) => {
 
 exports.referralInvited = async (userId) => {
     try {
-        console.log(userId);
+        console.log(userId, typeof userId);
         let user = await User.findOne({ userId: userId });
         if (user.leftAttempts == undefined) {
             console.log('was undefined for ', userId);

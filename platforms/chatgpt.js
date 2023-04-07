@@ -14,8 +14,8 @@ module.exports = async (user, prompt) => {
         let completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: prompt }],
-            temperature: 0.2,
-            max_tokens: 200,
+            temperature: 0.1,
+            max_tokens: 400,
             user: user
         });
 

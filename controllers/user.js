@@ -124,7 +124,7 @@ let resetDaily = async (userId) => {
             await user.save();
         }
 
-        if (daysDifference(user.lastTime) > 1) {
+        if (daysDifference(user.lastTime) >= 1) {
             user.dailyAttempts = 10;
             user.lastTime = date;
             await user.save();

@@ -146,7 +146,8 @@ bot.on('photo', async ctx => {
             }
         }
 
-        ctx.reply(`${sentTo} received \n${blocked} blocked`);
+        bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
+
     } else {
         ctx.reply('🤷‍♂️')
     }
@@ -175,7 +176,7 @@ bot.on('video', async ctx => {
             }
         }
 
-        ctx.reply(`${sentTo} received \n${blocked} blocked`);
+        bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
     } else {
         ctx.reply('🤷‍♂️')
     }
@@ -204,7 +205,7 @@ bot.on('animation', async ctx => {
             }
         }
 
-        ctx.reply(`${sentTo} received \n${blocked} blocked`);
+        bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
     } else {
         ctx.reply('🤷‍♂️')
     }

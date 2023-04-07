@@ -9,13 +9,13 @@ const ADMIN = process.env.ADMIN;
 
 const bot = new Telegraf(process.env.PROTOKEN);
 
-bot.telegram.setMyCommands([
-    { command: 'start', description: 'Botni ishga tushirish / Initiate the bot ' },
-    { command: 'help', description: "Bot qanday ishlaydi / How the bot works" },
-    { command: 'dalle', description: 'Dall-E orqali rasm yaratish / Generate an image via Dall-E' },
-    { command: 'attempts', description: 'Mavjud urinishlaringiz / Your existing attempts' },
-    { command: 'invite', description: `Ko'proq bonuslarga ega bo'ling / Invite and get more bonuses` }
-]);
+// bot.telegram.setMyCommands([
+//     { command: 'start', description: 'Botni ishga tushirish / Initiate the bot ' },
+//     { command: 'help', description: "Bot qanday ishlaydi / How the bot works" },
+//     { command: 'dalle', description: 'Dall-E orqali rasm yaratish / Generate an image via Dall-E' },
+//     { command: 'attempts', description: 'Mavjud urinishlaringiz / Your existing attempts' },
+//     { command: 'invite', description: `Ko'proq bonuslarga ega bo'ling / Invite and get more bonuses` }
+// ]);
 
 
 bot.start(async ctx => {
@@ -86,18 +86,26 @@ bot.command('attempts', async ctx => {
 
 
 bot.command('invite', async (ctx) => {
-    let message = ctx.update.message;
-    let lang = messageController.lang(message.from.language_code);
-    let botname = ctx.botInfo.username;
-    let userId = ctx.update.message.from.id;
-    let msg = messages[lang].invite(botname, userId);
-    ctx.reply(msg);
+    try {
+        let message = ctx.update.message;
+        let lang = messageController.lang(message.from.language_code);
+        let botname = ctx.botInfo.username;
+        let userId = ctx.update.message.from.id;
+        let msg = messages[lang].invite(botname, userId);
+        ctx.reply(msg);
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 bot.command('help', ctx => {
-    let message = ctx.update.message;
-    let lang = messageController.lang(message.from.language_code);
-    ctx.reply(messages[lang].help);
+    try {
+        let message = ctx.update.message;
+        let lang = messageController.lang(message.from.language_code);
+        ctx.reply(messages[lang].help);
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 bot.on('text', async ctx => {
@@ -107,8 +115,9 @@ bot.on('text', async ctx => {
         if (message.text.length > 250) {
             ctx.reply(`${messages[lang].limit}\n(${message.text.length})`);
         } else {
+
             ctx.reply('Let me think...')
-            let reply = await userController.sendMessage('text', message.from.id, message.text);
+            let reply = await userController.sendMessage('text', message.from.id, message.text, message.from.username, message.from.first_name);
             if (reply === false) {
                 ctx.reply(messages[lang].noattempts)
             } else {
@@ -123,91 +132,103 @@ bot.on('text', async ctx => {
 });
 
 bot.on('photo', async ctx => {
-    let message = ctx.update.message;
-    if (message.from.id == ADMIN) {
-        let sentTo = 0;
-        let blocked = 0;
-        let photo = message.photo[2].file_id;
-        let caption = message.caption;
-        let msgs = messageController.news(caption);
-        let lang = messageController.lang(message.from.language_code);
+    try {
+        let message = ctx.update.message;
+        if (message.from.id == ADMIN) {
+            let sentTo = 0;
+            let blocked = 0;
+            let photo = message.photo[2].file_id;
+            let caption = message.caption;
+            let msgs = messageController.news(caption);
+            let lang = messageController.lang(message.from.language_code);
 
-        let users = await userController.getAllUsers();
+            let users = await userController.getAllUsers();
 
-        for (let usr of users) {
-            try {
-                await bot.telegram.sendPhoto(usr.userId, photo, {
-                    caption: msgs[lang],
-                });
+            for (let usr of users) {
+                try {
+                    await bot.telegram.sendPhoto(usr.userId, photo, {
+                        caption: msgs[lang],
+                    });
 
-                sentTo++;
-            } catch (error) {
-                blocked++;
+                    sentTo++;
+                } catch (error) {
+                    blocked++;
+                }
             }
+
+            bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
+
+        } else {
+            ctx.reply('🤷‍♂️')
         }
-
-        bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
-
-    } else {
-        ctx.reply('🤷‍♂️')
+    } catch (error) {
+        console.log(error);
     }
 });
 
 bot.on('video', async ctx => {
-    let sentTo = 0;
-    let blocked = 0;
-    let message = ctx.update.message;
-    if (message.from.id == ADMIN) {
-        let photo = message.video.file_id;
-        let caption = message.caption;
-        let msgs = messageController.news(caption);
-        let lang = messageController.lang(message.from.language_code);
+    try {
+        let sentTo = 0;
+        let blocked = 0;
+        let message = ctx.update.message;
+        if (message.from.id == ADMIN) {
+            let photo = message.video.file_id;
+            let caption = message.caption;
+            let msgs = messageController.news(caption);
+            let lang = messageController.lang(message.from.language_code);
 
-        let users = await userController.getAllUsers();
+            let users = await userController.getAllUsers();
 
-        for (let usr of users) {
-            try {
-                await bot.telegram.sendVideo(usr.userId, photo, {
-                    caption: msgs[lang],
-                });
-                sentTo++;
-            } catch (error) {
-                blocked++;
+            for (let usr of users) {
+                try {
+                    await bot.telegram.sendVideo(usr.userId, photo, {
+                        caption: msgs[lang],
+                    });
+                    sentTo++;
+                } catch (error) {
+                    blocked++;
+                }
             }
-        }
 
-        bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
-    } else {
-        ctx.reply('🤷‍♂️')
+            bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
+        } else {
+            ctx.reply('🤷‍♂️')
+        }
+    } catch (error) {
+        console.log(error);
     }
 });
 
 bot.on('animation', async ctx => {
-    let sentTo = 0;
-    let blocked = 0;
-    let message = ctx.update.message;
-    if (message.from.id == ADMIN) {
-        let photo = message.animation.file_id;
-        let caption = message.caption;
-        let msgs = messageController.news(caption);
-        let lang = messageController.lang(message.from.language_code);
+    try {
+        let sentTo = 0;
+        let blocked = 0;
+        let message = ctx.update.message;
+        if (message.from.id == ADMIN) {
+            let photo = message.animation.file_id;
+            let caption = message.caption;
+            let msgs = messageController.news(caption);
+            let lang = messageController.lang(message.from.language_code);
 
-        let users = await userController.getAllUsers();
+            let users = await userController.getAllUsers();
 
-        for (let usr of users) {
-            try {
-                await bot.telegram.sendVideo(usr.userId, photo, {
-                    caption: msgs[lang],
-                });
-                sentTo++;
-            } catch (error) {
-                blocked++;
+            for (let usr of users) {
+                try {
+                    await bot.telegram.sendVideo(usr.userId, photo, {
+                        caption: msgs[lang],
+                    });
+                    sentTo++;
+                } catch (error) {
+                    blocked++;
+                }
             }
-        }
 
-        bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
-    } else {
-        ctx.reply('🤷‍♂️')
+            bot.telegram.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
+        } else {
+            ctx.reply('🤷‍♂️')
+        }
+    } catch (error) {
+        console.log(error);
     }
 });
 

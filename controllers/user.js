@@ -43,11 +43,14 @@ exports.createNewUser = async (userId, username, fullName) => {
     }
 }
 
-exports.sendMessage = async (mode, userId, message) => {
+exports.sendMessage = async (mode, userId, message, username, first_name) => {
     try {
         await resetDaily(userId);
 
         let user = await User.findOne({ userId: userId });
+        if (!user) {
+            return "Restart the bot /start";
+        }
 
         if (user.dailyAttempts == 0) {
             if (user.leftAttempts == 0) {
@@ -58,6 +61,8 @@ exports.sendMessage = async (mode, userId, message) => {
         } else {
             user.dailyAttempts -= 1;
         }
+        user.username = username;
+        user.fullName = first_name;
 
         if (mode === 'image') {
             await user.save();
@@ -118,7 +123,6 @@ let resetDaily = async (userId) => {
         let user = await User.findOne({ userId: userId });
 
         if (user.dailyAttempts == undefined) {
-            console.log('reset for someone');
             user.dailyAttempts = 10;
             user.lastTime = date;
             await user.save();

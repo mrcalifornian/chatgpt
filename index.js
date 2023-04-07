@@ -6,8 +6,8 @@ const userController = require('./controllers/user');
 const messageController = require('./data/messages');
 const messages = require('./data/messages').messsages;
 
-const TOKEN = process.env.TOKENTEST;
-const dblink = process.env.MONGODBTEST;
+const TOKEN = process.env.PROTOKEN;
+const dblink = process.env.MONGODB;
 
 const bot = new TelegramBot(TOKEN, {
   polling: true,

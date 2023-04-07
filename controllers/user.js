@@ -43,14 +43,16 @@ exports.createNewUser = async (userId, username, fullName) => {
     }
 }
 
-exports.sendMessage = async (mode, userId, message, username, first_name) => {
+exports.sendMessage = async (mode, userId, message, username, first_name, cb) => {
     try {
         await resetDaily(userId);
 
         let user = await User.findOne({ userId: userId });
+
         if (!user) {
-            return "Restart the bot /start";
+            return "/start";
         }
+
 
         if (user.dailyAttempts == 0) {
             if (user.leftAttempts == 0) {
@@ -105,11 +107,11 @@ exports.referralInvited = async (userId) => {
     }
 }
 
-exports.checkAttempts = async (userId) => {
+exports.checkAttempts = async (userId, cb) => {
     try {
         let user = await User.findOne({ userId: userId });
 
-        return { daily: user.dailyAttempts, total: user.leftAttempts };
+        cb({ daily: user.dailyAttempts, total: user.leftAttempts });
 
     } catch (error) {
         console.log(error);
@@ -121,19 +123,22 @@ let resetDaily = async (userId) => {
     try {
         let date = new Date().toLocaleDateString();
         let user = await User.findOne({ userId: userId });
+        if (user) {
 
-        if (user.dailyAttempts == undefined) {
-            user.dailyAttempts = 10;
-            user.lastTime = date;
-            await user.save();
+            if (user.dailyAttempts == undefined) {
+                user.dailyAttempts = 10;
+                user.lastTime = date;
+                await user.save();
+            }
+
+            if (daysDifference(user.lastTime) >= 1) {
+                user.dailyAttempts = 10;
+                user.lastTime = date;
+                await user.save();
+                console.log('attempts reset');
+            }
+
         }
-
-        if (daysDifference(user.lastTime) >= 1) {
-            user.dailyAttempts = 10;
-            user.lastTime = date;
-            await user.save();
-        }
-
     } catch (error) {
         console.log(error);
     }

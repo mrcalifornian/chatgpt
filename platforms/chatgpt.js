@@ -3,18 +3,19 @@ require('dotenv').config();
 
 const API = process.env.OPENAI;
 
+const configuration = new Configuration({
+    apiKey: API,
+});
+
+const openai = new OpenAIApi(configuration);
 
 module.exports = async (user, prompt) => {
-    const configuration = new Configuration({
-        apiKey: API,
-    });
-    const openai = new OpenAIApi(configuration);
-
     try {
+
         let completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: prompt }],
-            temperature: 0.1,
+            temperature: 0.5,
             max_tokens: 400,
             user: user
         });

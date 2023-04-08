@@ -43,7 +43,7 @@ exports.createNewUser = async (userId, username, fullName) => {
     }
 }
 
-exports.sendMessage = async (mode, userId, message, username, first_name, cb) => {
+exports.sendMessage = async (mode, userId, message, username, first_name) => {
     try {
         await resetDaily(userId);
 
@@ -150,7 +150,7 @@ function daysDifference(inputDate) {
     const inputDateTime = new Date(inputDate);
 
     const timeDifference = inputDateTime.getTime() - currentDate.getTime();
-    const daysDifference = Math.round(Math.abs((timeDifference / oneDay)) - 1);
+    const daysDifference = Math.round(Math.abs((timeDifference / oneDay)));
 
     return daysDifference;
 }

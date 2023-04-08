@@ -136,6 +136,7 @@ let botStart = () => {
           let reply = await userController.sendMessage('text', userId, sentText, username, fullName);
 
           if (reply === false) {
+            bot.deleteMessage(userId, messageId + 1);
             await bot.sendMessage(userId, messages[lang].noattempts)
           } else {
             bot.deleteMessage(userId, messageId + 1);

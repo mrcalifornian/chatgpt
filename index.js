@@ -157,13 +157,15 @@ let botStart = () => {
   });
 }
 
-mongoose.set("strictQuery", true);
-mongoose
-  .connect(dblink)
-  .then(() => {
-    console.log("DB Connected");
-    botStart();
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+module.exports = () => {
+  mongoose.set("strictQuery", true);
+  mongoose
+    .connect(dblink)
+    .then(() => {
+      console.log("DB Connected");
+      botStart();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}

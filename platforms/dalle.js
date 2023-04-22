@@ -15,7 +15,7 @@ exports.getImage = async (prompt) => {
         const response = await openai.createImage({
             prompt: prompt,
             n: 1,
-            size: "256x256",
+            size: "512x512",
         });
 
         let image_url = response.data.data[0].url;

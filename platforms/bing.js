@@ -30,8 +30,6 @@ export default async (prompt, ctx, messageId, userId) => {
             },
         });
 
-        // console.log(res.detail.sourceAttributions);
-        // console.log(res.detail.suggestedResponses);
         return clearText(res.text);
     } catch (error) {
         console.log(error);

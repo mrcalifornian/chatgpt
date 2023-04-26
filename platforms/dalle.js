@@ -1,8 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import dotenv from 'dotenv';
 dotenv.config();
-// const { Configuration, OpenAIApi } = require("openai");
-// require('dotenv').config();
 
 let API = process.env.OPENAI;
 

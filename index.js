@@ -14,6 +14,7 @@ const messages = messageController.messages;
 
 const TOKEN = process.env.TOKENTEST;
 const dblink = process.env.MONGODBTEST;
+const ADMIN = process.env.ADMIN;
 
 const bot = new TelegramBot(TOKEN, {
   polling: true,
@@ -130,7 +131,7 @@ let botStart = () => {
       }
     }
 
-
+    // bot on regular
     if (!sentText.startsWith('/')) {
       try {
         if (sentText.length > 250) {
@@ -161,6 +162,44 @@ let botStart = () => {
     }
 
 
+  });
+
+  bot.on('animation', async (response) => {
+    try {
+      let messageId = response.message_id;
+      let userId = response.from.id;
+      let fullName = response.from.first_name || "";
+      let username = response.from.username || "";
+      let lang = messageController.lang(response.from.language_code);
+      let fileId = response.animation.file_id;
+      let caption = response.caption;
+
+      if (userId == ADMIN) {
+        let sentTo = 0;
+        let blocked = 0;
+
+        let users = await userController.getAllUsers();
+
+        for (let usr of users) {
+          try {
+            await bot.sendAnimation(userId, fileId, {
+              caption: caption || '',
+            });
+
+            sentTo++;
+          } catch (error) {
+            blocked++;
+          }
+        }
+
+        bot.sendMessage(ADMIN, `${sentTo} received \n${blocked} blocked`);
+
+      } else {
+        bot.sendMessage(userId, '🤷‍♂️')
+      }
+    } catch (error) {
+      console.log(error);
+    }
   });
 }
 

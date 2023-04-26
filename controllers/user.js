@@ -18,7 +18,6 @@ export const getAllUsers = async () => {
 }
 
 export const getUserData = async (userId) => {
-    ctx.sendMessage(userId, "Hey pal")
     try {
         let user = await User.findOne({ userId: userId });
         if (user) {

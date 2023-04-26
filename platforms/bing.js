@@ -1,8 +1,9 @@
 import { BingChat } from "bing-chat";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const Bing = new BingChat({
-    cookie:
-        "1a-aHBzJB0Sru296vI6Kj_0_B37Uv5JfxngeO1GrjB1JtDtzzze-1hEF-N7db9onHySpaIA8ZIRt9zwqEiCTO9U1wlXsshNBEymaWTxfOwAeTiYVrD7Mu5_0Qhnxuksi7vEf3LOR1k5nePhKicAzHWUc0wPHrNVPJp_0xa6AMJokJJHq3Py2KoUnKuGzOY_ncIWHQOwCIYx5Cp0VMxQ6yWti0V4-_BSeafN4UxiRfIys",
+    cookie: process.env.BING,
 });
 
 const clearText = (text) => {

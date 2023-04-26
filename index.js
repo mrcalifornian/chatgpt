@@ -7,8 +7,8 @@ import * as userController from "./controllers/user.js";
 import * as messageController from "./data/messages.js";
 const messages = messageController.messages;
 
-const TOKEN = process.env.TOKENTEST;
-const dblink = process.env.MONGODBTEST;
+const TOKEN = process.env.TOKEN;
+const dblink = process.env.MONGODB;
 const ADMIN = process.env.ADMIN;
 
 const bot = new TelegramBot(TOKEN, {

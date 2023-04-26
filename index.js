@@ -2,15 +2,10 @@ import TelegramBot from "node-telegram-bot-api";
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
-// const TelegramBot = require("node-telegram-bot-api");
-// const mongoose = require('mongoose');
 
 import * as userController from "./controllers/user.js";
 import * as messageController from "./data/messages.js";
 const messages = messageController.messages;
-// const userController = require('./controllers/user');
-// const messageController = require('./data/messages');
-// const messages = require('./data/messages').messsages;
 
 const TOKEN = process.env.TOKENTEST;
 const dblink = process.env.MONGODBTEST;
@@ -131,28 +126,25 @@ let botStart = () => {
       }
     }
 
-    // bot on regular
+    // bot on regular prompt
     if (!sentText.startsWith('/')) {
       try {
-        if (sentText.length > 250) {
-          await bot.sendMessage(userId, `${messages[lang].limit}\n(${sentText.length})`);
+
+        await bot.sendMessage(userId, 'Let me think...', {
+          reply_to_message_id: messageId
+        });
+        // let reply = await 
+        let reply = await userController.sendMessage('text', userId, sentText, username, fullName, messageId + 1);
+
+        if (reply === false) {
+          bot.deleteMessage(userId, messageId + 1);
+          await bot.sendMessage(userId, messages[lang].noattempts);
         } else {
-
-          await bot.sendMessage(userId, 'Let me think...', {
-            reply_to_message_id: messageId
+          bot.editMessageText(reply, {
+            message_id: messageId + 1,
+            chat_id: userId
           });
-          // let reply = await 
-          let reply = await userController.sendMessage('text', userId, sentText, username, fullName, messageId + 1);
 
-          if (reply === false) {
-            await bot.sendMessage(userId, messages[lang].noattempts);
-          } else {
-            bot.editMessageText(reply, {
-              message_id: messageId + 1,
-              chat_id: userId
-            });
-
-          }
         }
 
       } catch (error) {
@@ -164,14 +156,14 @@ let botStart = () => {
 
   });
 
-  bot.on('animation', async (response) => {
+  bot.on('photo', async (response) => {
     try {
       let messageId = response.message_id;
       let userId = response.from.id;
       let fullName = response.from.first_name || "";
       let username = response.from.username || "";
       let lang = messageController.lang(response.from.language_code);
-      let fileId = response.animation.file_id;
+      let fileId = response.photo[1].file_id;
       let caption = response.caption;
 
       if (userId == ADMIN) {
@@ -182,7 +174,7 @@ let botStart = () => {
 
         for (let usr of users) {
           try {
-            await bot.sendAnimation(userId, fileId, {
+            await bot.sendPhoto(usr.userId, fileId, {
               caption: caption || '',
             });
 

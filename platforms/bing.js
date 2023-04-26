@@ -18,9 +18,10 @@ export default async (prompt, ctx, messageId, userId) => {
         let prevmsg = '';
 
         const res = await Bing.sendMessage(prompt, {
+            variant: "Precise",
             onProgress: (partialResponse) => {
-                if (prevmsg.length + 50 < partialResponse.text.length) {
-                    ctx.editMessageText(clearText(partialResponse.text), {
+                if (prevmsg.length + 25 < partialResponse.text.length) {
+                    ctx.editMessageText(`${clearText(partialResponse.text)}✍️`, {
                         message_id: messageId,
                         chat_id: userId
                     });

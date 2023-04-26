@@ -1,11 +1,7 @@
 import User from '../models/user.js';
-import chatgpt from '../platforms/chatgpt.js';
 import dalle from "../platforms/dalle.js";
 import { ctx } from "../index.js";
 import bing from '../platforms/bing.js';
-// const User = require('../models/user');
-// const chatgpt = require('../platforms/chatgpt');
-// const dalle = require('../platforms/dalle');
 
 export const getAllUsers = async () => {
     try {
@@ -103,8 +99,6 @@ export const referralInvited = async (userId) => {
         }
 
         await user.save();
-        console.log(userId, 'invited new friend');
-
         return true;
     } catch (error) {
         console.log(error);
@@ -140,7 +134,6 @@ let resetDaily = async (userId) => {
                 user.dailyAttempts = 10;
                 user.lastTime = date;
                 await user.save();
-                console.log('attempts reset');
             }
 
         }

@@ -1,7 +1,8 @@
 {
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node app.js",
+    "start": "node index.js",
     "start-sever": "node index.js"
   },
   "dependencies": {

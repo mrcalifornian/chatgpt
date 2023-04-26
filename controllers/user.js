@@ -1,8 +1,13 @@
-const User = require('../models/user');
-const chatgpt = require('../platforms/chatgpt');
-const dalle = require('../platforms/dalle');
+import User from '../models/user.js';
+import chatgpt from '../platforms/chatgpt.js';
+import dalle from "../platforms/dalle.js";
+import { ctx } from "../index.js";
+import bing from '../platforms/bing.js';
+// const User = require('../models/user');
+// const chatgpt = require('../platforms/chatgpt');
+// const dalle = require('../platforms/dalle');
 
-exports.getAllUsers = async () => {
+export const getAllUsers = async () => {
     try {
         let users = await User.find();
         return users;
@@ -12,7 +17,8 @@ exports.getAllUsers = async () => {
     }
 }
 
-exports.getUserData = async (userId) => {
+export const getUserData = async (userId) => {
+    ctx.sendMessage(userId, "Hey pal")
     try {
         let user = await User.findOne({ userId: userId });
         if (user) {
@@ -24,7 +30,7 @@ exports.getUserData = async (userId) => {
     return false;
 }
 
-exports.createNewUser = async (userId, username, fullName) => {
+export const createNewUser = async (userId, username, fullName) => {
     try {
         let date = new Date().toLocaleDateString();
 
@@ -43,7 +49,7 @@ exports.createNewUser = async (userId, username, fullName) => {
     }
 }
 
-exports.sendMessage = async (mode, userId, message, username, first_name) => {
+export const sendMessage = async (mode, userId, message, username, first_name, messageId) => {
     try {
         await resetDaily(userId);
 
@@ -68,10 +74,10 @@ exports.sendMessage = async (mode, userId, message, username, first_name) => {
 
         if (mode === 'image') {
             await user.save();
-            return await dalle.getImage(message);
+            return await dalle(message);
         }
 
-        let response = await chatgpt(user.fullName, message);
+        let response = await bing(message, ctx, messageId, userId);
 
         user.prompts.push({
             prompt: message,
@@ -86,7 +92,7 @@ exports.sendMessage = async (mode, userId, message, username, first_name) => {
     }
 }
 
-exports.referralInvited = async (userId) => {
+export const referralInvited = async (userId) => {
     try {
         console.log(userId, typeof userId);
         let user = await User.findOne({ userId: userId });
@@ -107,7 +113,7 @@ exports.referralInvited = async (userId) => {
     }
 }
 
-exports.checkAttempts = async (userId, cb) => {
+export const checkAttempts = async (userId, cb) => {
     try {
         let user = await User.findOne({ userId: userId });
 

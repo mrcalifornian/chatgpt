@@ -1,9 +1,12 @@
-const { Configuration, OpenAIApi } = require("openai");
-require('dotenv').config();
+import { Configuration, OpenAIApi } from "openai";
+import dotenv from 'dotenv';
+dotenv.config();
+// const { Configuration, OpenAIApi } = require("openai");
+// require('dotenv').config();
 
 let API = process.env.OPENAI;
 
-exports.getImage = async (prompt) => {
+export default async (prompt) => {
 
     const configuration = new Configuration({
         apiKey: API,

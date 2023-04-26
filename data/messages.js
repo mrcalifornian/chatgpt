@@ -1,4 +1,4 @@
-exports.messsages = {
+export const messages = {
     'start': "O'zingiz xohlagan suhbat tilini tanlang\n\nВыберите разговорный язык, который вы хотите \n\nChoose a conversational language you want",
     'uz': {
         "greet": (username) => `Salom ${username}. ChatGPT-ga xush kelibsiz! Men sizning so'rovlaringiz bo'yicha sizga yordam berish va tushunarli javoblar berish uchun mo'ljallangan til modeliman. Bugun sizga qanday yordam bera olaman? \n\n/help - qo'shimcha ma'lumot uchun`,
@@ -41,7 +41,7 @@ exports.messsages = {
     },
 }
 
-exports.lang = (lang) => {
+export const lang = (lang) => {
     switch (lang) {
         case 'uz':
         case 'ru':
@@ -52,7 +52,7 @@ exports.lang = (lang) => {
     }
 }
 
-exports.news = (caption) => {
+export const news = (caption) => {
     try {
         let captionList = caption.split('#');
 

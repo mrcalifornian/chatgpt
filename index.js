@@ -1,13 +1,19 @@
-const TelegramBot = require("node-telegram-bot-api");
-const mongoose = require('mongoose');
-require("dotenv").config();
+import TelegramBot from "node-telegram-bot-api";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
+// const TelegramBot = require("node-telegram-bot-api");
+// const mongoose = require('mongoose');
 
-const userController = require('./controllers/user');
-const messageController = require('./data/messages');
-const messages = require('./data/messages').messsages;
+import * as userController from "./controllers/user.js";
+import * as messageController from "./data/messages.js";
+const messages = messageController.messages;
+// const userController = require('./controllers/user');
+// const messageController = require('./data/messages');
+// const messages = require('./data/messages').messsages;
 
-const TOKEN = process.env.PROTOKEN;
-const dblink = process.env.MONGODB;
+const TOKEN = process.env.TOKENTEST;
+const dblink = process.env.MONGODBTEST;
 
 const bot = new TelegramBot(TOKEN, {
   polling: true,
@@ -131,17 +137,18 @@ let botStart = () => {
           await bot.sendMessage(userId, `${messages[lang].limit}\n(${sentText.length})`);
         } else {
 
-          await bot.sendMessage(userId, 'Let me think...')
+          await bot.sendMessage(userId, 'Let me think...', {
+            reply_to_message_id: messageId
+          });
           // let reply = await 
-          let reply = await userController.sendMessage('text', userId, sentText, username, fullName);
+          let reply = await userController.sendMessage('text', userId, sentText, username, fullName, messageId + 1);
 
           if (reply === false) {
-            bot.deleteMessage(userId, messageId + 1);
-            await bot.sendMessage(userId, messages[lang].noattempts)
+            await bot.sendMessage(userId, messages[lang].noattempts);
           } else {
-            bot.deleteMessage(userId, messageId + 1);
-            await bot.sendMessage(userId, reply, {
-              reply_to_message_id: messageId
+            bot.editMessageText(reply, {
+              message_id: messageId + 1,
+              chat_id: userId
             });
 
           }
@@ -157,15 +164,16 @@ let botStart = () => {
   });
 }
 
-module.exports = () => {
-  mongoose.set("strictQuery", true);
-  mongoose
-    .connect(dblink)
-    .then(() => {
-      console.log("DB Connected");
-      botStart();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
+mongoose.set("strictQuery", true);
+mongoose
+  .connect(dblink)
+  .then(() => {
+    console.log("DB Connected");
+    botStart();
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+
+export const ctx = bot;
